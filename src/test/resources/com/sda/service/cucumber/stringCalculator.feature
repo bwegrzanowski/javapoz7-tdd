@@ -29,3 +29,15 @@ Feature:
     And I pass multiple values with white spaces
     When I trigger calculate function
     Then I get 17 as a result
+
+#  Scenario Outline: I can calculate multiple numbers
+#    Given I initialise stringCalculator
+#    And I pass multiple values
+#    When I trigger calculate function
+#    Then I get 34 as a result
+#    Examples:
+#      | value  | result |
+#      |   |  |
+#      |   |  |
+#      |   |  |
+#      |   |  |

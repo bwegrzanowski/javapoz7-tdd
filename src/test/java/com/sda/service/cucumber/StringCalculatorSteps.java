@@ -48,23 +48,8 @@ public class StringCalculatorSteps {
         this.result = calculator.calculate(value);
     }
 
-    @Then("^I get 5 as a result$")
-    public void I_get_5_as_a_result() {
-        Assert.assertEquals(5, result);
-    }
-
-    @Then("^I get 0 as a result$")
-    public void I_get_0_as_a_result() {
-        Assert.assertEquals(0, result);
-    }
-
-    @Then("^I get 34 as a result$")
-    public void iGet34AsAResult() {
-        Assert.assertEquals(34, result);
-    }
-
-    @Then("^I get 17 as a result$")
-    public void iGet17AsAResult() {
-        Assert.assertEquals(17, result);
+    @Then("^I get (.*) as a result$")
+    public void iGet34AsAResult(int passedResult) {
+        Assert.assertEquals(passedResult, result);
     }
 }
