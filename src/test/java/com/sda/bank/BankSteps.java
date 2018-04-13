@@ -5,6 +5,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
+import org.mockito.Mockito;
 
 public class BankSteps {
     private Bank bank;
@@ -12,10 +13,21 @@ public class BankSteps {
     private boolean userInsertResult;
     private BankAccount account;
     private boolean accountCreationResult;
+    private boolean depositResult;
+    private BankDatabase bankDatabase = new BankDatabase();
 
     @Given("^I initialise bank")
     public void I_initialise_bank() {
-        this.bank = new Bank();
+        this.bank = new Bank(bankDatabase);
+    }
+
+    @Given("^I mock bank database for this case$")
+    public void iMockBankDatabaseForThisCase() {
+        this.bankDatabase = Mockito.mock(BankDatabase.class);
+        Mockito.when(bankDatabase.addBankUser(Mockito.any())).then(e -> true);
+        Mockito.when(bankDatabase.createAccountFor(Mockito.any(), Mockito.anyString())).then(e -> true);
+        Mockito.when(bankDatabase.getAccountWithId(Mockito.anyString())).then(e -> BankAccount.instanceOf(null, 1000));
+        Mockito.when(bankDatabase.deposit(Mockito.any(), Mockito.anyInt())).then(e -> true);
     }
 
     @And("^I create user with name '(.*)' and pesel '(.*)'$")
@@ -37,6 +49,11 @@ public class BankSteps {
     @And("^I insert account to bank$")
     public void iInsertAccountToBank() {
         accountCreationResult = bank.createAccountFor(user, account.getId());
+    }
+
+    @And("^I deposit '(\\d+)' to account with name '(.*)'$")
+    public void iDepositAmountToAccountWithNameName(int amount, String accountName) {
+        this.depositResult = bank.deposit(accountName, amount);
     }
 
     @Then("^user is present in bank$")
@@ -61,6 +78,17 @@ public class BankSteps {
     public void accountIsNotPresentInBank() {
         Assert.assertEquals(0, bank.numberOfAccounts());
         Assert.assertFalse(accountCreationResult);
+    }
+
+    @Then("^User has only '(\\d+)' account in bank$")
+    public void userHasOnlyAccountInBank(int numberOfAccounts) {
+        Assert.assertEquals(numberOfAccounts, bank.getNumberOfAccountsFor(user));
+    }
+
+    @Then("^Account with name '(.*)' has amount of '(\\d+)'$")
+    public void accountWithNameTestoweKontoHasAmountOf(String accountName, int amount) {
+        Assert.assertTrue(depositResult);
+        Assert.assertEquals(amount, bank.getAccountWithId(accountName).getAmount());
     }
 
 }

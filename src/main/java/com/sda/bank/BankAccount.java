@@ -6,6 +6,12 @@ public class BankAccount {
     private String id;
     private int amount;
 
+    public static BankAccount instanceOf(String id, int amount) {
+        BankAccount bankAccount = new BankAccount(id);
+        bankAccount.amount = amount;
+        return bankAccount;
+    }
+
     public BankAccount(String id) {
         this.id = id;
     }
